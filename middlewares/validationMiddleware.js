@@ -1,5 +1,7 @@
-import { body, query, validationResult } from "express-validator";
-import { BadRequestError } from "../errors/customErrors.js";
+import { body, param, validationResult } from "express-validator";
+import mongoose from "mongoose";
+import { BadRequestError, NotFoundError } from "../errors/customErrors.js";
+import Product from "../models/ProductModel.js";
 import User from "../models/UserModel.js";
 
 const withValidatorErrors = (validateValues) => {
@@ -9,6 +11,9 @@ const withValidatorErrors = (validateValues) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
         const errorMessages = errors.array().map((error) => error.msg);
+        if (errorMessages[0].startsWith("no product"))
+          throw new NotFoundError(errorMessages);
+
         throw new BadRequestError(errorMessages);
       }
 
@@ -42,4 +47,21 @@ export const validateLoginInput = withValidatorErrors([
     .isEmail()
     .withMessage("invalid email format"),
   body("password").notEmpty().withMessage("password is required"),
+]);
+
+export const validateProductInput = withValidatorErrors([
+  body("name").notEmpty().withMessage("product name is required"),
+  body("description").notEmpty().withMessage("product description is required"),
+  body("price").notEmpty().withMessage("product price is required"),
+  body("category").notEmpty().withMessage("product category is required"),
+]);
+
+export const validateIdParam = withValidatorErrors([
+  param("id").custom(async (productId) => {
+    const isValidId = mongoose.Types.ObjectId.isValid(productId);
+    if (!isValidId) throw new BadRequestError("invalid mongodb id");
+
+    const product = await Product.findById(productId);
+    if (!product) throw new NotFoundError(`no product with id ${productId}`);
+  }),
 ]);

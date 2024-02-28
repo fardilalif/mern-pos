@@ -7,6 +7,7 @@ const app = express();
 
 // routers
 import authRouter from "./routes/authRouter.js";
+import productRouter from "./routes/productRouter.js";
 
 // middlewares
 import errorHandleMiddleware from "./middlewares/errorHandlerMiddleware.js";
@@ -16,6 +17,7 @@ app.use(express.json());
 
 app.get("/", (req, res) => res.send("hello world"));
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/products", productRouter);
 
 // not found
 app.use("*", (req, res) => {

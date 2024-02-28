@@ -15,7 +15,8 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
-  const isValidUser = user && comparePassword(req.body.password, user.password);
+  const isValidUser =
+    user && (await comparePassword(req.body.password, user.password));
 
   if (!isValidUser) throw new UnauthenticatedError("invalid credentials");
 
@@ -30,6 +31,12 @@ export const login = async (req, res) => {
 
   res.status(StatusCodes.OK).json({ msg: "login success" });
 };
+
 export const logout = (req, res) => {
-  res.send("logout");
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({ msg: "user logged out" });
 };
