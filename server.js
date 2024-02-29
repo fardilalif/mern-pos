@@ -10,6 +10,7 @@ const app = express();
 // routers
 import authRouter from "./routes/authRouter.js";
 import productRouter from "./routes/productRouter.js";
+import saleRouter from "./routes/saleRouter.js";
 
 // middlewares
 import { authenticateUser } from "./middlewares/authMiddleware.js";
@@ -28,6 +29,7 @@ cloudinary.config({
 app.get("/", (req, res) => res.send("hello world"));
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/products", authenticateUser, productRouter);
+app.use("/api/v1/sales", authenticateUser, saleRouter);
 
 // not found
 app.use("*", (req, res) => {

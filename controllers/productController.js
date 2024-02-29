@@ -31,14 +31,25 @@ export const getSingleProduct = async (req, res) => {
 };
 
 export const updateProduct = async (req, res) => {
+  let newProduct = { ...req.body };
+
+  if (req.file) {
+    const file = formatImage(req.file);
+
+    const response = await cloudinary.uploader.upload(file);
+    newProduct.image = response.secure_url;
+    newProduct.imagePublicId = response.public_id;
+  }
+
   const updatedProduct = await Product.findByIdAndUpdate(
     req.params.id,
-    req.body,
-    {
-      new: true,
-    }
+    newProduct
   );
-  res.status(StatusCodes.OK).json({ msg: "product modified", updatedProduct });
+
+  if (req.file && updatedProduct.imagePublicId)
+    cloudinary.uploader.destroy(updatedProduct.imagePublicId);
+
+  res.status(StatusCodes.OK).json({ msg: "product modified" });
 };
 
 export const deleteProduct = async (req, res) => {

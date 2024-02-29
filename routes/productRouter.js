@@ -29,6 +29,7 @@ router.get("/:id", validateIdParam, getSingleProduct);
 router.patch(
   "/:id",
   authorizePermissions("admin"),
+  upload.single("image"),
   validateIdParam,
   validateProductInput,
   updateProduct
