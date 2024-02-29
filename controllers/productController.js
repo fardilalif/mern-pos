@@ -1,5 +1,8 @@
+import { v2 as cloudinary } from "cloudinary";
 import { StatusCodes } from "http-status-codes";
+import { formatImage } from "../middlewares/multerMiddleware.js";
 import Product from "../models/ProductModel.js";
+import User from "../models/UserModel.js";
 
 export const getAllProducts = async (req, res) => {
   const products = await Product.find({});
@@ -7,7 +10,17 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const createProduct = async (req, res) => {
-  const product = await Product.create(req.body);
+  let product = { ...req.body };
+
+  if (req.file) {
+    const file = formatImage(req.file);
+
+    const response = await cloudinary.uploader.upload(file);
+    product.image = response.secure_url;
+    product.imagePublicId = response.public_id;
+  }
+
+  product = await Product.create(product);
 
   res.status(StatusCodes.CREATED).json({ product });
 };

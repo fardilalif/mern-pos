@@ -1,3 +1,5 @@
+import { v2 as cloudinary } from "cloudinary";
+import cookieParser from "cookie-parser";
 import "dotenv/config";
 import express from "express";
 import "express-async-errors";
@@ -10,14 +12,22 @@ import authRouter from "./routes/authRouter.js";
 import productRouter from "./routes/productRouter.js";
 
 // middlewares
+import { authenticateUser } from "./middlewares/authMiddleware.js";
 import errorHandleMiddleware from "./middlewares/errorHandlerMiddleware.js";
 
 if (process.env.NODE_ENV === "development") app.use(morgan("dev"));
 app.use(express.json());
+app.use(cookieParser());
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_SECRET,
+});
 
 app.get("/", (req, res) => res.send("hello world"));
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/products", productRouter);
+app.use("/api/v1/products", authenticateUser, productRouter);
 
 // not found
 app.use("*", (req, res) => {
