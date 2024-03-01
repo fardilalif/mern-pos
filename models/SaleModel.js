@@ -13,6 +13,7 @@ const saleSchema = new mongoose.Schema(
       },
     ],
     totalAmount: Number,
+    isPaid: { type: Boolean, default: false },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   },
   { timestamps: true }

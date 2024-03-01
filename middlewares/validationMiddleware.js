@@ -1,4 +1,4 @@
-import { body, param, validationResult } from "express-validator";
+import { body, check, param, validationResult } from "express-validator";
 import mongoose from "mongoose";
 import { BadRequestError, NotFoundError } from "../errors/customErrors.js";
 import Product from "../models/ProductModel.js";
@@ -64,4 +64,9 @@ export const validateIdParam = withValidatorErrors([
     const product = await Product.findById(productId);
     if (!product) throw new NotFoundError(`no product with id ${productId}`);
   }),
+]);
+
+export const validateSaleInput = withValidatorErrors([
+  body("items").isArray().withMessage("items are required"),
+  body("items.*").notEmpty().withMessage("items"),
 ]);
