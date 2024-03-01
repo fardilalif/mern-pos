@@ -67,6 +67,10 @@ export const validateIdParam = withValidatorErrors([
 ]);
 
 export const validateSaleInput = withValidatorErrors([
-  body("items").isArray().withMessage("items are required"),
-  body("items.*").notEmpty().withMessage("items"),
+  body("items")
+    .custom((items) => {
+      if (items.length < 1) return false;
+      else return true;
+    })
+    .withMessage("items are required"),
 ]);
