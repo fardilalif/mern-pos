@@ -4,8 +4,11 @@ import Sale from "../models/SaleModel.js";
 import { NotFoundError } from "./../errors/customErrors.js";
 
 export const getAllSales = async (req, res) => {
-  res.send("get all sales");
+  const sales = await Sale.find({});
+
+  res.status(StatusCodes.OK).json({ sales });
 };
+
 export const createSale = async (req, res) => {
   const { items } = req.body;
 
@@ -39,12 +42,23 @@ export const createSale = async (req, res) => {
 };
 
 export const updateSale = async (req, res) => {
-  res.send("update sale");
+  const sale = await Sale.findByIdAndUpdate(
+    req.params.id,
+    { isPaid: true },
+    {
+      new: true,
+    }
+  );
+
+  res.status(StatusCodes.OK).json({ msg: "sale updated", sale });
 };
 
 export const getSingleSale = async (req, res) => {
-  res.send("get single sale");
+  const sale = await Sale.findById(req.params.id);
+  res.status(StatusCodes.OK).json({ sale });
 };
+
 export const deleteSale = async (req, res) => {
-  res.send("delete sale");
+  await Sale.findByIdAndDelete(req.params.id);
+  res.status(StatusCodes.OK).json({ msg: "sale removed" });
 };

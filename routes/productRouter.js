@@ -9,7 +9,7 @@ import {
 import { authorizePermissions } from "../middlewares/authMiddleware.js";
 import upload from "../middlewares/multerMiddleware.js";
 import {
-  validateIdParam,
+  validateIdParamProduct,
   validateProductInput,
 } from "../middlewares/validationMiddleware.js";
 const router = express.Router();
@@ -24,13 +24,13 @@ router.post(
   createProduct
 );
 
-router.get("/:id", validateIdParam, getSingleProduct);
+router.get("/:id", validateIdParamProduct, getSingleProduct);
 
 router.patch(
   "/:id",
   authorizePermissions("admin"),
   upload.single("image"),
-  validateIdParam,
+  validateIdParamProduct,
   validateProductInput,
   updateProduct
 );
@@ -38,7 +38,7 @@ router.patch(
 router.delete(
   "/:id",
   authorizePermissions("admin"),
-  validateIdParam,
+  validateIdParamProduct,
   deleteProduct
 );
 

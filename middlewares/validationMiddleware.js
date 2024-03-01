@@ -2,6 +2,7 @@ import { body, check, param, validationResult } from "express-validator";
 import mongoose from "mongoose";
 import { BadRequestError, NotFoundError } from "../errors/customErrors.js";
 import Product from "../models/ProductModel.js";
+import Sale from "../models/SaleModel.js";
 import User from "../models/UserModel.js";
 
 const withValidatorErrors = (validateValues) => {
@@ -56,13 +57,23 @@ export const validateProductInput = withValidatorErrors([
   body("category").notEmpty().withMessage("product category is required"),
 ]);
 
-export const validateIdParam = withValidatorErrors([
+export const validateIdParamProduct = withValidatorErrors([
   param("id").custom(async (productId) => {
     const isValidId = mongoose.Types.ObjectId.isValid(productId);
     if (!isValidId) throw new BadRequestError("invalid mongodb id");
 
     const product = await Product.findById(productId);
     if (!product) throw new NotFoundError(`no product with id ${productId}`);
+  }),
+]);
+
+export const validateIdParamSale = withValidatorErrors([
+  param("id").custom(async (saleId) => {
+    const isValidId = mongoose.Types.ObjectId.isValid(saleId);
+    if (!isValidId) throw new BadRequestError("invalid mongodb id");
+
+    const sale = await Sale.findById(saleId);
+    if (!sale) throw new NotFoundError(`no sale with id ${saleId}`);
   }),
 ]);
 
