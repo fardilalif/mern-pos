@@ -6,13 +6,14 @@ import {
   getSingleSale,
   updateSale,
 } from "../controllers/saleController.js";
+import { authorizePermissions } from "../middlewares/authMiddleware.js";
 import {
   validateIdParamSale,
   validateSaleInput,
 } from "../middlewares/validationMiddleware.js";
 const router = express.Router();
 
-router.get("/", getAllSales);
+router.get("/", authorizePermissions("admin"), getAllSales);
 
 router.post("/", validateSaleInput, createSale);
 
