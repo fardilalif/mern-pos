@@ -14,6 +14,9 @@ import {
   Transaction,
 } from "./pages/index.js";
 
+// action
+import { action as registerAction } from "./pages/Register.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -27,6 +30,7 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <Register />,
+        action: registerAction,
       },
       {
         path: "login",
