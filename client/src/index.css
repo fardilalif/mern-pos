@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .container {
+    @apply w-[95vw] max-w-[1170] mx-auto;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
