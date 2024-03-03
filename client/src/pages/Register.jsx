@@ -6,17 +6,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form.jsx";
-import { Input } from "@/components/ui/input.jsx";
+import { Form } from "@/components/ui/form.jsx";
 import { useForm } from "react-hook-form";
 import { Link, Form as ReactRouterForm, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
+import { FormFieldComp } from "../components";
 import customFetch from "./../utils/customFetch";
 
 export const action = async ({ request }) => {
@@ -28,7 +22,6 @@ export const action = async ({ request }) => {
     toast.success("Registration successful");
     return redirect("/login");
   } catch (error) {
-    console.log(error);
     toast.error(error?.response?.data?.msg);
     return error;
   }
@@ -51,49 +44,27 @@ const Register = () => {
               method="POST"
               className="grid w-full items-center gap-4"
             >
-              <FormField
-                control={form.control}
+              <FormFieldComp
+                form={form}
                 name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="your name" required {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
+                placeholder="Name"
+                required={true}
               />
-              <FormField
-                control={form.control}
+              <FormFieldComp
+                form={form}
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        required
-                        placeholder="test@gmail.com"
-                        {...field}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                placeholder="Email"
+                type="email"
               />
-              <FormField
-                control={form.control}
+              <FormFieldComp
+                form={form}
+                type="password"
                 name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" required {...field} />
-                    </FormControl>
-                  </FormItem>
-                )}
+                placeholder="Password"
+                required={true}
               />
               <Button type="submit" className="mt-2">
-                Submit
+                Register
               </Button>
             </ReactRouterForm>
           </Form>

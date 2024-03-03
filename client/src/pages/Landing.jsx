@@ -5,7 +5,7 @@ const Landing = () => {
   return (
     <div>
       <nav className="flex items-center justify-center h-[4rem] bg-primary">
-        <h1 className="text-4xl font-bold tracking-widest text-primary-foreground">
+        <h1 className="text-4xl font-semibold tracking-widest text-primary-foreground">
           POS
         </h1>
       </nav>
