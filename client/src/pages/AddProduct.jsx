@@ -1,6 +1,6 @@
 const AddProduct = () => {
   return (
-    <div className="bg-secondary-foreground">
+    <div>
       <h1>add product</h1>
     </div>
   );

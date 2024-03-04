@@ -5,7 +5,7 @@ import { Navbar, SidebarComp } from "../components/index.js";
 const DashboardContext = createContext();
 
 const DashboardLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
@@ -17,7 +17,9 @@ const DashboardLayout = () => {
             <SidebarComp />
             <div>
               <Navbar />
-              <Outlet />
+              <div className="w-[90%] mx-auto py-4">
+                <Outlet />
+              </div>
             </div>
           </main>
         </section>
