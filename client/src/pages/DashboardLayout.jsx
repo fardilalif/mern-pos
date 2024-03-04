@@ -10,15 +10,19 @@ const DashboardLayout = () => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <DashboardContext.Provider value={{ toggleSidebar, isSidebarOpen }}>
-      <div className="h-screen grid grid-cols-[auto_1fr]">
-        <SidebarComp />
-        <div>
-          <Navbar />
-          <Outlet />
-        </div>
-      </div>
-    </DashboardContext.Provider>
+    <>
+      <DashboardContext.Provider value={{ toggleSidebar, isSidebarOpen }}>
+        <section>
+          <main className="grid grid-cols-[auto_1fr]">
+            <SidebarComp />
+            <div>
+              <Navbar />
+              <Outlet />
+            </div>
+          </main>
+        </section>
+      </DashboardContext.Provider>
+    </>
   );
 };
 

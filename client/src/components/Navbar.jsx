@@ -5,8 +5,8 @@ import { Button } from "./ui/button.jsx";
 const Navbar = () => {
   const { toggleSidebar } = useDashboardContext();
   return (
-    <nav className="h-[4rem] flex justify-center items-center shadow-lg bg-primary">
-      <div className="flex justify-between items-center w-full">
+    <nav className="h-[4rem] flex justify-center items-center shadow-lg bg-primary sticky top-0 ">
+      <div className="flex justify-between items-center w-full px-4">
         <Button
           variant="ghost"
           className="justify-start hover:bg-transparent hover:scale-150"
@@ -14,6 +14,9 @@ const Navbar = () => {
         >
           <FaAlignLeft className=" text-2xl text-primary-foreground" />
         </Button>
+        <h1 className="capitalize text-primary-foreground font-semibold">
+          hello, user
+        </h1>
       </div>
     </nav>
   );
