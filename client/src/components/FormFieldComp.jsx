@@ -13,6 +13,7 @@ const FormFieldComp = ({
   placeholder,
   type,
   required,
+  ...rest
 }) => {
   return (
     <FormField
@@ -20,13 +21,14 @@ const FormFieldComp = ({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className="capitalize">{name}</FormLabel>
+          <FormLabel className="capitalize">{formLabel || name}</FormLabel>
           <FormControl>
             <Input
               type={type}
               placeholder={placeholder}
               required={required}
               {...field}
+              {...rest}
             />
           </FormControl>
         </FormItem>

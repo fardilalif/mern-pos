@@ -11,7 +11,7 @@ export const getAllProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   let product = { ...req.body };
-
+  console.log("here in contrller");
   if (req.file) {
     const file = formatImage(req.file);
 

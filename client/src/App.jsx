@@ -15,8 +15,12 @@ import {
 } from "./pages/index.js";
 
 // action
+import { action as addProductAction } from "./pages/AddProduct.jsx";
 import { action as loginAction } from "./pages/Login.jsx";
 import { action as registerAction } from "./pages/Register.jsx";
+
+// loader
+import { loader as dashboardLoader } from "./pages/DashboardLayout.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +45,7 @@ const router = createBrowserRouter([
       {
         path: "dashboard",
         element: <DashboardLayout />,
+        loader: dashboardLoader,
         children: [
           {
             index: true,
@@ -53,6 +58,7 @@ const router = createBrowserRouter([
           {
             path: "add-product",
             element: <AddProduct />,
+            action: addProductAction,
           },
           {
             path: "edit-product",

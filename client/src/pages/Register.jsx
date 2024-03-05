@@ -40,10 +40,7 @@ const Register = () => {
         </CardHeader>
         <CardContent className="pb-0">
           <Form {...form}>
-            <ReactRouterForm
-              method="POST"
-              className="grid w-full items-center gap-4"
-            >
+            <ReactRouterForm method="POST" className="grid w-full gap-4">
               <FormFieldComp
                 form={form}
                 name="name"
