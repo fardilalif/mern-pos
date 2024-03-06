@@ -6,11 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.jsx";
-import { Form } from "@/components/ui/form.jsx";
-import { useForm } from "react-hook-form";
-import { Link, Form as ReactRouterForm, redirect } from "react-router-dom";
+import { Input } from "@/components/ui/input.jsx";
+import { Label } from "@/components/ui/label.jsx";
+import { Form, Link, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FormFieldComp } from "../components";
 import customFetch from "./../utils/customFetch";
 
 export const action = async ({ request }) => {
@@ -28,37 +27,23 @@ export const action = async ({ request }) => {
 };
 
 const Login = () => {
-  const form = useForm({ defaultValues: { email: "", password: "" } });
-
   return (
     <div className="min-h-[100vh] grid place-items-center">
-      <Card className="w-[350px]">
+      <Card className="w-[350px] shadow-md">
         <CardHeader>
           <CardTitle>Login</CardTitle>
         </CardHeader>
         <CardContent className="pb-0">
-          <Form {...form}>
-            <ReactRouterForm
-              method="POST"
-              className="grid w-full gap-4 items-center"
-            >
-              <FormFieldComp
-                form={form}
-                name="email"
-                type="email"
-                placeholder="Email"
-              />
-              <FormFieldComp
-                form={form}
-                name="password"
-                type="password"
-                required={true}
-                placeholder="Password"
-              />
-              <Button type="submit" className="mt-2">
-                Login
-              </Button>
-            </ReactRouterForm>
+          <Form method="POST" className="grid gap-4 items-center">
+            <div className="flex flex-col justify-center gap-y-1.5 w-full ">
+              <Label htmlFor="email">Email</Label>
+              <Input id="email" name="email" placeholder="Email" />
+            </div>
+            <div className="flex flex-col justify-center gap-y-1.5 w-full ">
+              <Label htmlFor="password">Password</Label>
+              <Input type="password" id="password" name="password" />
+            </div>
+            <Button type="submit">Login</Button>
           </Form>
         </CardContent>
         <CardFooter>

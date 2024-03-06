@@ -5,17 +5,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.jsx";
-import { Form } from "@/components/ui/form.jsx";
-import { useForm } from "react-hook-form";
-import { Form as ReactRouterForm, redirect, useSubmit } from "react-router-dom";
+import { Input } from "@/components/ui/input.jsx";
+import { Label } from "@/components/ui/label.jsx";
+import { Form, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FormFieldComp } from "../components";
 import customFetch from "./../utils/customFetch";
 
 export const action = async ({ request }) => {
   const formData = await request.formData();
-
-  // check for image file
 
   try {
     await customFetch.post("/products", formData);
@@ -27,66 +24,52 @@ export const action = async ({ request }) => {
 };
 
 const AddProduct = () => {
-  const form = useForm({
-    defaultValues: {
-      name: "",
-      description: "",
-      price: 0,
-      category: "",
-      image: "",
-    },
-  });
-
   return (
     <section>
-      <Card className="w-[70%] mx-auto">
+      <Card className="w-[60%] mx-auto shadow-md">
         <CardHeader>
           <CardTitle>Add Product</CardTitle>
         </CardHeader>
         <CardContent>
-          <Form {...form}>
-            <ReactRouterForm method="POST" className="grid w-full gap-4">
-              <FormFieldComp
-                form={form}
-                name="name"
-                formLabel="product name"
-                placeholder="Name"
-                required={true}
-              />
-              <FormFieldComp
-                form={form}
+          <Form
+            method="POST"
+            encType="multipart/form-data"
+            className="grid w-full gap-4 items-center"
+          >
+            <div className="flex flex-col justify-center gap-y-1.5 w-full ">
+              <Label htmlFor="name">Name</Label>
+              <Input id="name" name="name" placeholder="Product Name" />
+            </div>
+            <div className="flex flex-col justify-center gap-y-1.5 w-full">
+              <Label htmlFor="description">Description</Label>
+              <Input
+                id="description"
                 name="description"
-                formLabel="product description"
-                placeholder="Description"
-                required={true}
+                placeholder="Product Description"
               />
-              <FormFieldComp
-                form={form}
+            </div>
+            <div className="flex flex-col justify-center gap-y-1.5 w-full">
+              <Label htmlFor="category">Category</Label>
+              <Input
+                id="category"
                 name="category"
-                formLabel="product category"
-                placeholder="Category"
-                required={true}
+                placeholder="Product Category"
               />
-              <FormFieldComp
-                form={form}
+            </div>
+            <div className="flex flex-col justify-center gap-y-1.5 w-full">
+              <Label htmlFor="price">Price</Label>
+              <Input
                 type="number"
-                min="1"
+                id="price"
                 name="price"
-                formLabel="product price"
-                placeholder="Price"
-                required={true}
+                placeholder="Product Price"
               />
-              <FormFieldComp
-                form={form}
-                type="file"
-                name="image"
-                formLabel="product image"
-                required={true}
-              />
-              <Button type="submit" className="mt-2">
-                Submit
-              </Button>
-            </ReactRouterForm>
+            </div>
+            <div className="flex flex-col justify-center gap-y-1.5 w-full">
+              <Label htmlFor="image">Image</Label>
+              <Input type="file" id="image" name="image" />
+            </div>
+            <Button>Submit</Button>
           </Form>
         </CardContent>
       </Card>
