@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card.jsx";
 import { Form } from "@/components/ui/form.jsx";
 import { useForm } from "react-hook-form";
-import { Form as ReactRouterForm, redirect } from "react-router-dom";
+import { Form as ReactRouterForm, redirect, useSubmit } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FormFieldComp } from "../components";
 import customFetch from "./../utils/customFetch";
@@ -15,7 +15,6 @@ import customFetch from "./../utils/customFetch";
 export const action = async ({ request }) => {
   const formData = await request.formData();
 
-  console.log(formData);
   // check for image file
 
   try {
@@ -26,6 +25,7 @@ export const action = async ({ request }) => {
     return error;
   }
 };
+
 const AddProduct = () => {
   const form = useForm({
     defaultValues: {
@@ -33,6 +33,7 @@ const AddProduct = () => {
       description: "",
       price: 0,
       category: "",
+      image: "",
     },
   });
 
