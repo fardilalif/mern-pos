@@ -29,7 +29,7 @@ const DashboardLayout = () => {
             <SidebarComp />
             <div>
               <Navbar />
-              <div className="w-[90%] max-w-screen-xl mx-auto py-6">
+              <div className="grid min-h-[calc(100vh-4rem)] w-[90%] max-w-screen-xl mx-auto py-6">
                 <Outlet />
               </div>
             </div>

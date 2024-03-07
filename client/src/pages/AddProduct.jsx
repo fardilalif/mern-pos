@@ -25,8 +25,8 @@ export const action = async ({ request }) => {
 
 const AddProduct = () => {
   return (
-    <section>
-      <Card className="w-[60%] mx-auto shadow-md">
+    <section className="grid place-items-center">
+      <Card className="w-[55%] shadow-md">
         <CardHeader>
           <CardTitle>Add Product</CardTitle>
         </CardHeader>

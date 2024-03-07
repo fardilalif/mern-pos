@@ -43,7 +43,7 @@ const SidebarComp = () => {
                 <NavLink
                   key={link.text}
                   to={link.url}
-                  className={`flex items-center gap-x-4 w-full cursor-pointer text-secondary-foreground hover:bg-accent transition-all duration-200 [&.active]:text-primary ${
+                  className={`flex items-center gap-x-4 w-full cursor-pointer hover:text-primary transition-all duration-200 [&.active]:text-primary ${
                     isSidebarOpen && "hover:translate-x-4"
                   }`}
                 >

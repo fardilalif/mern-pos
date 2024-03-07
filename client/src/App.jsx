@@ -21,6 +21,7 @@ import { action as registerAction } from "./pages/Register.jsx";
 
 // loader
 import { loader as dashboardLoader } from "./pages/DashboardLayout.jsx";
+import { loader as productsLoader } from "./pages/Products.jsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Products />,
+            loader: productsLoader,
           },
           {
             path: "transaction",
