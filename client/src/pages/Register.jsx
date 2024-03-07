@@ -6,11 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Form } from "@/components/ui/form.jsx";
-import { useForm } from "react-hook-form";
-import { Link, Form as ReactRouterForm, redirect } from "react-router-dom";
+import { Form, Link, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
-import { FormFieldComp } from "../components";
+import FormField from "./../components/FormField";
 import customFetch from "./../utils/customFetch";
 
 export const action = async ({ request }) => {
@@ -28,10 +26,6 @@ export const action = async ({ request }) => {
 };
 
 const Register = () => {
-  const form = useForm({
-    defaultValues: { name: "", email: "", password: "" },
-  });
-
   return (
     <div className="min-h-[100vh] grid place-items-center">
       <Card className="w-[350px]">
@@ -39,31 +33,31 @@ const Register = () => {
           <CardTitle>Register</CardTitle>
         </CardHeader>
         <CardContent className="pb-0">
-          <Form {...form}>
-            <ReactRouterForm method="POST" className="grid w-full gap-4">
-              <FormFieldComp
-                form={form}
-                name="name"
-                placeholder="Name"
-                required={true}
-              />
-              <FormFieldComp
-                form={form}
-                name="email"
-                placeholder="Email"
-                type="email"
-              />
-              <FormFieldComp
-                form={form}
-                type="password"
-                name="password"
-                placeholder="Password"
-                required={true}
-              />
-              <Button type="submit" className="mt-2">
-                Register
-              </Button>
-            </ReactRouterForm>
+          <Form method="POST" className="grid gap-4 items-center">
+            <FormField
+              id="name"
+              name="name"
+              placeholder="Name"
+              label="name"
+              required={true}
+            />
+            <FormField
+              id="email"
+              name="email"
+              placeholder="Email"
+              label="email"
+              type="email"
+              required={true}
+            />
+            <FormField
+              id="password"
+              name="password"
+              placeholder="Password"
+              label="password"
+              type="password"
+              required={true}
+            />
+            <Button type="submit">Register</Button>
           </Form>
         </CardContent>
         <CardFooter>

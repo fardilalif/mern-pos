@@ -6,10 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.jsx";
-import { Input } from "@/components/ui/input.jsx";
-import { Label } from "@/components/ui/label.jsx";
 import { Form, Link, redirect } from "react-router-dom";
 import { toast } from "react-toastify";
+import FormField from "./../components/FormField";
 import customFetch from "./../utils/customFetch";
 
 export const action = async ({ request }) => {
@@ -35,14 +34,22 @@ const Login = () => {
         </CardHeader>
         <CardContent className="pb-0">
           <Form method="POST" className="grid gap-4 items-center">
-            <div className="flex flex-col justify-center gap-y-1.5 w-full ">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" placeholder="Email" />
-            </div>
-            <div className="flex flex-col justify-center gap-y-1.5 w-full ">
-              <Label htmlFor="password">Password</Label>
-              <Input type="password" id="password" name="password" />
-            </div>
+            <FormField
+              type="email"
+              id="email"
+              name="email"
+              label="email"
+              placeholder="Email"
+              required={true}
+            />
+            <FormField
+              type="password"
+              id="password"
+              name="password"
+              label="password"
+              placeholder="Password"
+              required={true}
+            />
             <Button type="submit">Login</Button>
           </Form>
         </CardContent>
