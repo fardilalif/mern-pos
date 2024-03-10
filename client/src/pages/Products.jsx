@@ -22,46 +22,7 @@ export const loader = async () => {
 
 const Products = () => {
   const { products } = useLoaderData();
-<<<<<<< HEAD
   const [cart, setCart] = useState(getCartData() || []);
-=======
-  const [cart, setCart] = useState(getCartData || []);
-
-  const handleProductIncrement = (product) => {
-    const existingItemIndex = cart.findIndex(
-      (cartItem) =>
-        cartItem._id === product._id || cartItem.product === product._id
-    );
-
-    if (existingItemIndex !== -1) {
-      setCart((prevCart) => {
-        const updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity =
-          (prevCart[existingItemIndex].quantity || 0) + 1;
-        return updatedCart;
-      });
-    } else {
-      setCart((prevCart) => [...prevCart, { ...product, quantity: 1 }]);
-    }
-  };
-
-  const abortTransaction = () => {
-    setCart([]);
-    removeCartData();
-  };
-
-  useEffect(() => {
-    let items = cart.map((item) => {
-      return {
-        product: item._id || item.product,
-        quantity: item.quantity,
-        price: item.price,
-      };
-    });
-
-    saveCartData(items);
-  }, [cart]);
->>>>>>> db124e82350e6af9cf6946ecfa44f9fd2f410d0d
 
   // first handle product increment when user clicks the item, then save the new state. use useEffect() to handle state change. once state change, create new object with three properties (_id, quantity, price) and save to localStorage by calling the function saveCartData()
   const handleProductIncrement = (product) => {
@@ -111,11 +72,7 @@ const Products = () => {
             >
               <CardContent className="p-0 relative">
                 {cart.map((item) => {
-<<<<<<< HEAD
                   if (item._id === _id) {
-=======
-                  if (item._id === _id || item.product === _id) {
->>>>>>> db124e82350e6af9cf6946ecfa44f9fd2f410d0d
                     return (
                       <span
                         key={item._id}
