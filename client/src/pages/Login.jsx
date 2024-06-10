@@ -39,7 +39,7 @@ const Login = () => {
               id="email"
               name="email"
               label="email"
-              placeholder="Email"
+              placeholder="example@domain.com"
               required={true}
             />
             <FormField
@@ -47,7 +47,6 @@ const Login = () => {
               id="password"
               name="password"
               label="password"
-              placeholder="Password"
               required={true}
             />
             <Button type="submit">Login</Button>

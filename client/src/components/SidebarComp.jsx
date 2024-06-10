@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button.jsx";
 import { CiLogout } from "react-icons/ci";
-import { Link, NavLink, redirect, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { navLinks } from "./../constant";
 import { useDashboardContext } from "./../pages/DashboardLayout";

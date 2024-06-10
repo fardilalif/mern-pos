@@ -1,4 +1,5 @@
 export { default as AddProduct } from "./AddProduct.jsx";
+export { default as AllSales } from "./AllSales.jsx";
 export { default as DashboardLayout } from "./DashboardLayout.jsx";
 export { default as EditProduct } from "./EditProduct.jsx";
 export { default as Error } from "./Error.jsx";
@@ -7,4 +8,5 @@ export { default as Landing } from "./Landing.jsx";
 export { default as Login } from "./Login.jsx";
 export { default as Products } from "./Products.jsx";
 export { default as Register } from "./Register.jsx";
+export { default as Stats } from "./Stats.jsx";
 export { default as Transaction } from "./Transaction.jsx";

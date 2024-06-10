@@ -1,6 +1,11 @@
-import { createContext, useContext, useState } from "react";
-import { Outlet, redirect, useLoaderData } from "react-router-dom";
-import { Navbar, SidebarComp } from "../components/index.js";
+import { createContext, useContext } from "react";
+import {
+  Outlet,
+  redirect,
+  useLoaderData,
+  useNavigation,
+} from "react-router-dom";
+import { Loading, Navbar } from "../components/index.js";
 import customFetch from "./../utils/customFetch";
 
 export const loader = async () => {
@@ -16,22 +21,20 @@ export const loader = async () => {
 const DashboardContext = createContext();
 
 const DashboardLayout = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { user } = useLoaderData();
+  const navigation = useNavigation();
+  const isLoading = navigation.state === "loading";
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  console.log(isLoading);
 
   return (
     <>
-      <DashboardContext.Provider value={{ user, toggleSidebar, isSidebarOpen }}>
+      <DashboardContext.Provider value={{ user }}>
         <section>
-          <main className="grid grid-cols-[auto_1fr]">
-            <SidebarComp />
-            <div>
-              <Navbar />
-              <div className="grid min-h-[calc(100vh-4rem)] w-[90%] max-w-screen-xl mx-auto py-6">
-                <Outlet />
-              </div>
+          <main>
+            <Navbar />
+            <div className="w-11/12 max-w-screen-xl mx-auto py-6">
+              {isLoading ? <Loading /> : <Outlet />}
             </div>
           </main>
         </section>

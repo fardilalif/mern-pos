@@ -1,21 +1,27 @@
-import { FaAlignLeft } from "react-icons/fa";
+import { GoHome } from "react-icons/go";
+import { Link } from "react-router-dom";
 import { useDashboardContext } from "./../pages/DashboardLayout";
-import { Button } from "./ui/button.jsx";
+import NavLinks from "./NavLinks.jsx";
 
 const Navbar = () => {
-  const { user, toggleSidebar } = useDashboardContext();
+  const { user } = useDashboardContext();
 
   return (
     <nav className="h-[4rem] flex justify-center items-center shadow-lg bg-primary sticky top-0 z-10">
       <div className="w-[90%] max-w-screen-xl flex justify-between items-center">
-        <Button
-          variant="ghost"
-          className="hover:bg-transparent hover:scale-150 transition-transform p-0"
-          onClick={toggleSidebar}
+        {/* home button */}
+        <Link
+          to="/dashboard"
+          className="flex items-center cursor-pointer text-primary-foreground text-xl tracking-wider"
         >
-          <FaAlignLeft className=" text-2xl text-primary-foreground" />
-        </Button>
-        <h1 className="capitalize text-primary-foreground font-semibold">
+          POS <GoHome />
+        </Link>
+
+        {/* links */}
+        <NavLinks />
+
+        {/* greeting message */}
+        <h1 className="text-primary-foreground capitalize font-medium">
           hello, {user?.name}
         </h1>
       </div>
