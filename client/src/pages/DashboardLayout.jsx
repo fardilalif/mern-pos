@@ -25,8 +25,6 @@ const DashboardLayout = () => {
   const navigation = useNavigation();
   const isLoading = navigation.state === "loading";
 
-  console.log(isLoading);
-
   return (
     <>
       <DashboardContext.Provider value={{ user }}>

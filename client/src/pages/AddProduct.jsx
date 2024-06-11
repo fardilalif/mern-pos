@@ -33,7 +33,7 @@ const AddProduct = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="">Add Product</Button>
+        <Button>Add Product</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
