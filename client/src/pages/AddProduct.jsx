@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
-import { useState } from "react";
-import { Form } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import { Form, useNavigation } from "react-router-dom";
 import { toast } from "react-toastify";
 import customFetch from "./../utils/customFetch";
 
@@ -28,10 +28,11 @@ export const addProduct = async (formData) => {
 };
 
 const AddProduct = () => {
-  const [open, setOpen] = useState(false);
+  const navigation = useNavigation();
+  const isSubmitting = navigation.state === "submitting";
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button>Add Product</Button>
       </DialogTrigger>
@@ -85,9 +86,16 @@ const AddProduct = () => {
                   type="submit"
                   name="intent"
                   value="add product"
-                  onClick={() => setOpen(!open)}
+                  disabled={isSubmitting}
                 >
-                  Add Product
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please
+                      wait
+                    </>
+                  ) : (
+                    " Add Product"
+                  )}
                 </Button>
               </Form>
             </section>

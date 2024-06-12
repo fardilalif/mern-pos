@@ -4,21 +4,24 @@ import Sale from "../models/SaleModel.js";
 import { NotFoundError } from "./../errors/customErrors.js";
 
 export const getAllSales = async (req, res) => {
-  const sales = await Sale.find({});
+  const sales = await Sale.find({})
+    .populate({
+      path: "items",
+      populate: { path: "product", model: "Product" },
+    })
+    .populate("createdBy");
 
   res.status(StatusCodes.OK).json({ sales });
 };
 
 export const createSale = async (req, res) => {
   const { items } = req.body;
-
   let total = 0;
   let cartItems = [];
 
   for (const item of items) {
-    const productDb = await Product.findById(item.product);
-    if (!productDb)
-      throw new NotFoundError(`no product with id ${item.product}`);
+    const productDb = await Product.findById(item._id);
+    if (!productDb) throw new NotFoundError(`no product with id ${item._id}`);
 
     const singleProduct = {
       ...item,
@@ -33,7 +36,7 @@ export const createSale = async (req, res) => {
     items: cartItems,
     totalAmount: total,
     createdBy: req.user.userId,
-    isPaid: false,
+    isPaid: true,
   };
 
   const sale = await Sale.create(data);

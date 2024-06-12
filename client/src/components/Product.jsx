@@ -22,9 +22,14 @@ const Product = ({ product, cart, handleProductIncrement }) => {
         })}
         <img
           className="w-full h-32 object-cover rounded-t-lg"
-          src={product.image}
+          src={
+            product.image
+              ? product.image
+              : "https://placehold.co/600x400?text=Product"
+          }
           alt="product image"
         />
+
         <div className="flex flex-col justify-between items-baseline overflow-auto py-2 px-4 ">
           <h2 className="text-lg font-semibold capitalize tracking-wide">
             {product.name}

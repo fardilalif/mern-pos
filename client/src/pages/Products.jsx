@@ -40,7 +40,7 @@ const Products = () => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [cart, setCart] = useState(getCartData() || []);
 
-  // first handle product increment when user clicks the item, then save the new state. use useEffect() to handle state change. once state change, create new object with three properties (_id, quantity, price) and save to localStorage by calling the function saveCartData()
+  // handles add product to cart when click on product
   const handleProductIncrement = (product) => {
     const existingItemIndex = cart.findIndex(
       (cartItem) => cartItem._id === product._id
