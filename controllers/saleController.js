@@ -4,14 +4,28 @@ import Sale from "../models/SaleModel.js";
 import { NotFoundError } from "./../errors/customErrors.js";
 
 export const getAllSales = async (req, res) => {
-  const sales = await Sale.find({})
-    .populate({
-      path: "items",
-      populate: { path: "product", model: "Product" },
-    })
-    .populate("createdBy");
+  try {
+    const sales = await Sale.find({}).populate("createdBy");
 
-  res.status(StatusCodes.OK).json({ sales });
+    const populatedSales = await Promise.all(
+      sales.map(async (sale) => {
+        const populatedItems = await Promise.all(
+          sale.items.map(async (item) => {
+            const product = await Product.findById(item._id).lean();
+
+            return { ...item.toObject(), product };
+          })
+        );
+
+        return { ...sale.toObject(), items: populatedItems };
+      })
+    );
+
+    res.status(StatusCodes.OK).json({ sales: populatedSales });
+  } catch (error) {
+    console.error("Error fetching sales:", error);
+    throw new Error("Error fetching sales");
+  }
 };
 
 export const createSale = async (req, res) => {

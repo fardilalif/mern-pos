@@ -1,3 +1,4 @@
+import { queryClient } from "@/App.jsx";
 import { Button } from "@/components/ui/button.jsx";
 import {
   Sheet,
@@ -51,6 +52,9 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
       // clear cart data after successful payment
       setCart([]);
       removeCartData();
+
+      // invalidate all sales cache
+      queryClient.invalidateQueries("[allSales");
     } catch (error) {
       console.log(error);
       withReactContent(Swal).fire({

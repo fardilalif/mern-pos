@@ -24,6 +24,7 @@ import { action as registerAction } from "./pages/Register.jsx";
 // loader
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { loader as allSalesLoader } from "./pages/AllSales.jsx";
 import { loader as dashboardLoader } from "./pages/DashboardLayout.jsx";
 import { loader as productsLoader } from "./pages/Products.jsx";
 
@@ -77,6 +78,7 @@ const router = createBrowserRouter([
           {
             path: "all-sales",
             element: <AllSales />,
+            loader: allSalesLoader,
           },
           {
             path: "stats",
