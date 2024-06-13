@@ -17,7 +17,7 @@ const allSalesQuery = {
 const totalSalesDataQuery = {
   queryKey: ["totalSales"],
   queryFn: async () => {
-    const response = await customFetch.get("/sales/total-sale");
+    const response = await customFetch.get("/sales/total-sales");
     return response.data;
   },
 };
