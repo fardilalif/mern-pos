@@ -1,8 +1,10 @@
 import { queryClient } from "@/App.jsx";
-import { DataTable } from "@/components/index.js";
+import { DataTable, Loading } from "@/components/index.js";
 import { currencyFormatter } from "@/utils/currencyFormatter.js";
 import customFetch from "@/utils/customFetch.js";
 import { useQuery } from "@tanstack/react-query";
+import { BarChart } from "../components";
+import { dateFormatter } from "./../utils/dateFormatter";
 
 const allSalesQuery = {
   queryKey: ["allSales"],
@@ -12,11 +14,76 @@ const allSalesQuery = {
   },
 };
 
+const totalSalesDataQuery = {
+  queryKey: ["totalSales"],
+  queryFn: async () => {
+    const response = await customFetch.get("/sales/total-sale");
+    return response.data;
+  },
+};
+
 export const loader = async () => {
-  return queryClient.ensureQueryData(allSalesQuery);
+  queryClient.ensureQueryData(totalSalesDataQuery);
+  queryClient.ensureQueryData(allSalesQuery);
+  return null;
 };
 
 const AllSales = () => {
+  const {
+    data: salesData,
+    isLoading: isLoadingSales,
+    isError: isErrorSales,
+  } = useQuery(allSalesQuery) || {};
+  const {
+    data: totalSalesData,
+    isLoading: isLoadingTotalSales,
+    isError: isErrorTotalSales,
+  } = useQuery(totalSalesDataQuery);
+
+  if (isLoadingSales || isLoadingTotalSales) {
+    return (
+      <div className="flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
+
+  if (isErrorSales || isErrorTotalSales) {
+    return (
+      <div>
+        <h1 className="font-bold">Ops! Something went wrong.</h1>
+      </div>
+    );
+  }
+
+  const { sales } = salesData;
+  const { totalSales } = totalSalesData;
+
+  const state = {
+    options: {
+      chart: {
+        id: "total-sales",
+      },
+      xaxis: {
+        categories: totalSales.map((item) => item.product),
+        title: {
+          text: "Product",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Number of Product Sold",
+        },
+      },
+    },
+    series: [
+      {
+        name: "Total sold",
+        data: totalSales.map((item) => item.totalSold),
+      },
+    ],
+  };
+
   const columns = [
     {
       accessorKey: "totalAmount",
@@ -31,20 +98,14 @@ const AllSales = () => {
     {
       accessorKey: "createdAt",
       header: "Created At",
-      cell: ({ row }) => new Date(row.getValue("createdAt")).toString(),
+      cell: ({ row }) => dateFormatter(row.getValue("createdAt")),
     },
   ];
 
-  const {
-    data: { sales },
-  } = useQuery(allSalesQuery);
-
-  console.log(sales);
-  console.log(columns);
-
   return (
-    <div>
-      <DataTable data={sales} columns={columns} />
+    <div className="grid grid-cols-2 gap-4">
+      <BarChart title="Products Chart" state={state} />
+      <DataTable data={sales} columns={columns} title="Transactions" />
     </div>
   );
 };

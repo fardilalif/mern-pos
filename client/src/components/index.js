@@ -1,3 +1,4 @@
+export { default as BarChart } from "./BarChart.jsx";
 export { default as Checkout } from "./Checkout.jsx";
 export { default as DataTable } from "./DataTable.jsx";
 export { default as FormField } from "./FormField.jsx";

@@ -79,3 +79,45 @@ export const deleteSale = async (req, res) => {
   await Sale.findByIdAndDelete(req.params.id);
   res.status(StatusCodes.OK).json({ msg: "sale removed" });
 };
+
+export const getTotalSaleData = async (req, res) => {
+  const result = await Sale.aggregate([
+    {
+      $unwind: {
+        path: "$items",
+      },
+    },
+    {
+      $lookup: {
+        from: "products",
+        localField: "items._id",
+        foreignField: "_id",
+        as: "product",
+      },
+    },
+    {
+      $unwind: {
+        path: "$product",
+      },
+    },
+    {
+      $group: {
+        _id: "$product.name",
+        totalSold: {
+          $sum: "$items.quantity",
+        },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        product: "$_id",
+        totalSold: 1,
+      },
+    },
+  ]);
+
+  res.status(StatusCodes.OK).json({
+    totalSales: result,
+  });
+};

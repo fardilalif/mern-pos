@@ -53,8 +53,9 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
       setCart([]);
       removeCartData();
 
-      // invalidate all sales cache
-      queryClient.invalidateQueries("[allSales");
+      // invalidate all sales and total
+      queryClient.invalidateQueries({ queryKey: ["allSales"] });
+      queryClient.invalidateQueries({ queryKey: ["totalSales"] });
     } catch (error) {
       console.log(error);
       withReactContent(Swal).fire({

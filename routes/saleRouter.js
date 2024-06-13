@@ -4,6 +4,7 @@ import {
   deleteSale,
   getAllSales,
   getSingleSale,
+  getTotalSaleData,
   updateSale,
 } from "../controllers/saleController.js";
 import { authorizePermissions } from "../middlewares/authMiddleware.js";
@@ -14,6 +15,8 @@ import {
 const router = express.Router();
 
 router.get("/", authorizePermissions("admin"), getAllSales);
+
+router.get("/total-sales", getTotalSaleData);
 
 router.post("/", validateSaleInput, createSale);
 
