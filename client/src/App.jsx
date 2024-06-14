@@ -3,7 +3,6 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 // pages
 import {
   AddProduct,
-  AllSales,
   DashboardLayout,
   EditProduct,
   Error,
@@ -24,9 +23,9 @@ import { action as registerAction } from "./pages/Register.jsx";
 // loader
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { loader as allSalesLoader } from "./pages/AllSales.jsx";
 import { loader as dashboardLoader } from "./pages/DashboardLayout.jsx";
 import { loader as productsLoader } from "./pages/Products.jsx";
+import { loader as allSalesLoader } from "./pages/Stats.jsx";
 
 export const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -76,13 +75,9 @@ const router = createBrowserRouter([
             element: <EditProduct />,
           },
           {
-            path: "all-sales",
-            element: <AllSales />,
-            loader: allSalesLoader,
-          },
-          {
             path: "stats",
             element: <Stats />,
+            loader: allSalesLoader,
           },
         ],
       },

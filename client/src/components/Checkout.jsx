@@ -13,11 +13,19 @@ import {
 import { currencyFormatter } from "@/utils/currencyFormatter.js";
 import customFetch from "@/utils/customFetch.js";
 import { removeCartData } from "@/utils/localStorage.js";
+import { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import CartItem from "./CartItem.jsx";
+import Receipt from "./Receipt.jsx";
 
 const Checkout = ({ cart, setCart, totalAmount }) => {
+  const [receipt, setReceipt] = useState(null);
+  const [receiptData, setReceiptData] = useState(null);
+  const componentRef = useRef(null);
+  const [triggerPrint, setTriggerPrint] = useState(false);
+
   const updateQuantity = (itemId, quantity) => {
     setCart((prevCart) => {
       if (quantity < 1) return prevCart.filter((cart) => cart._id !== itemId);
@@ -42,16 +50,26 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
 
   const saveTransaction = async () => {
     try {
-      await customFetch.post("/sales", { items: cart });
-      withReactContent(Swal).fire({
-        title: "Payment Success!!",
-        icon: "success",
-        confirmButtonColor: "#16A34A",
-      });
+      const { data } = await customFetch.post("/sales", { items: cart });
+      setReceiptData(data.sale);
+      withReactContent(Swal)
+        .fire({
+          title: "Payment Success!!",
+          icon: "success",
+          confirmButtonColor: "#16A34A",
+          confirmButtonText: "Print Receipt",
+          showCancelButton: true,
+          cancelButtonText: "OK",
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            setTriggerPrint(true); // Set triggerPrint to true
+          }
 
-      // clear cart data after successful payment
-      setCart([]);
-      removeCartData();
+          // clear cart data after successful payment
+          setCart([]);
+          removeCartData();
+        });
 
       // invalidate all sales and total
       queryClient.invalidateQueries({ queryKey: ["allSales"] });
@@ -65,6 +83,29 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
       });
     }
   };
+
+  useEffect(() => {
+    console.log(receiptData);
+    if (triggerPrint && receiptData) {
+      console.log("handle print");
+      handlePrint();
+      setTriggerPrint(false); // Reset the trigger
+    }
+  }, [triggerPrint, receiptData]);
+
+  const handleOnBeforeGetContent = async () => {
+    console.log("handleOnBeforeGetContent");
+    console.log(receiptData);
+    const response = await customFetch.get(`/sales/${receiptData._id}`);
+    console.log(response.data);
+    setReceipt(response.data);
+    return response.data;
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    onBeforeGetContent: () => handleOnBeforeGetContent(),
+  });
 
   const payment = () => {
     withReactContent(Swal)
@@ -101,54 +142,64 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
   };
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button>Checkout</Button>
-      </SheetTrigger>
-      <SheetContent className="min-w-[500px] sm:min-w-[700px]">
-        <SheetHeader>
-          <SheetTitle>Checkout</SheetTitle>
-          <SheetDescription>Edit cart before payment.</SheetDescription>
-        </SheetHeader>
-        <div>
-          <div className="grid gap-4 py-4">
-            {cart.length < 1 ? (
-              <div className="text-center text-lg ">
-                <p className="text-muted-foreground">Cart is empty :(</p>
+    <>
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button>Checkout</Button>
+        </SheetTrigger>
+        <SheetContent className="min-w-[500px] sm:min-w-[700px]">
+          <SheetHeader>
+            <SheetTitle>Checkout</SheetTitle>
+            <SheetDescription>Edit cart before payment.</SheetDescription>
+          </SheetHeader>
+          <div>
+            <div className="grid gap-4 py-4">
+              {cart.length < 1 ? (
+                <div className="text-center text-lg ">
+                  <p className="text-muted-foreground">Cart is empty :(</p>
+                </div>
+              ) : (
+                cart.map((cartItem) => {
+                  return (
+                    <CartItem
+                      key={cartItem._id}
+                      cartItem={cartItem}
+                      deleteCartItem={deleteCartItem}
+                      updateQuantity={updateQuantity}
+                      generateQuantityOptions={generateQuantityOptions}
+                    />
+                  );
+                })
+              )}
+            </div>
+
+            {cart.length > 0 && (
+              <div className="flex items-center justify-end py-4">
+                <span className="text-lg font-bold">
+                  Total Amount: {currencyFormatter(totalAmount)}
+                </span>
               </div>
-            ) : (
-              cart.map((cartItem) => {
-                return (
-                  <CartItem
-                    key={cartItem._id}
-                    cartItem={cartItem}
-                    deleteCartItem={deleteCartItem}
-                    updateQuantity={updateQuantity}
-                    generateQuantityOptions={generateQuantityOptions}
-                  />
-                );
-              })
             )}
           </div>
 
-          {cart.length > 0 && (
-            <div className="flex items-center justify-end py-4">
-              <span className="text-lg font-bold">
-                Total Amount: {currencyFormatter(totalAmount)}
-              </span>
-            </div>
-          )}
-        </div>
-
-        <SheetFooter>
-          <SheetClose asChild>
-            <Button type="submit" disabled={cart.length < 1} onClick={payment}>
-              Pay
-            </Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+          <SheetFooter>
+            <SheetClose asChild>
+              <Button
+                type="submit"
+                disabled={cart.length < 1}
+                onClick={() => payment()}
+              >
+                Pay
+              </Button>
+            </SheetClose>
+          </SheetFooter>
+        </SheetContent>
+      </Sheet>
+      {/* receipt component */}
+      <div style={{ display: "none" }}>
+        <Receipt ref={componentRef} receiptData={receipt} />
+      </div>
+    </>
   );
 };
 export default Checkout;

@@ -1,6 +1,5 @@
 import { CiViewList } from "react-icons/ci";
 import { FaBox } from "react-icons/fa6";
-import { MdQueryStats } from "react-icons/md";
 
 export const navLinks = [
   {
@@ -10,11 +9,6 @@ export const navLinks = [
   },
   {
     icon: <CiViewList size={25} />,
-    text: "View All Sales",
-    url: "/dashboard/all-sales",
-  },
-  {
-    icon: <MdQueryStats size={25} />,
     text: "Stats",
     url: "/dashboard/stats",
   },

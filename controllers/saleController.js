@@ -72,7 +72,20 @@ export const updateSale = async (req, res) => {
 
 export const getSingleSale = async (req, res) => {
   const sale = await Sale.findById(req.params.id);
-  res.status(StatusCodes.OK).json({ sale });
+
+  const populatedItems = await Promise.all(
+    sale.items.map(async (item) => {
+      const product = await Product.findById(item._id).lean();
+
+      return { ...item.toObject(), product };
+    })
+  );
+
+  console.log(populatedItems);
+
+  res
+    .status(StatusCodes.OK)
+    .json({ ...sale.toObject(), items: populatedItems });
 };
 
 export const deleteSale = async (req, res) => {
