@@ -58,6 +58,7 @@ const Products = () => {
     }
   };
 
+  // saves cart data to localStorage whenever cart state changes
   useEffect(() => {
     const calculateTotalAmount = () => {
       const total = cart.reduce(

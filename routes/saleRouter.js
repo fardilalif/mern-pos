@@ -3,6 +3,7 @@ import {
   createSale,
   deleteSale,
   getAllSales,
+  getProductsSoldPerDay,
   getSingleSale,
   getTotalSaleData,
   updateSale,
@@ -17,6 +18,8 @@ const router = express.Router();
 router.get("/", authorizePermissions("admin"), getAllSales);
 
 router.get("/total-sales", getTotalSaleData);
+
+router.get("/products-sold", getProductsSoldPerDay);
 
 router.post("/", validateSaleInput, createSale);
 

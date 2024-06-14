@@ -20,8 +20,8 @@ const NavLinks = () => {
                 className={`bg-transparent text-primary-foreground font-medium ${navigationMenuTriggerStyle()}`}
                 style={({ isActive }) => {
                   return {
-                    background: isActive ? "white" : "none",
-                    color: isActive ? "black" : "white",
+                    background: isActive && "white",
+                    color: isActive && "black",
                   };
                 }}
               >

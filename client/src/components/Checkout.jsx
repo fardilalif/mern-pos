@@ -13,7 +13,7 @@ import {
 import { currencyFormatter } from "@/utils/currencyFormatter.js";
 import customFetch from "@/utils/customFetch.js";
 import { removeCartData } from "@/utils/localStorage.js";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactToPrint } from "react-to-print";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -22,19 +22,23 @@ import Receipt from "./Receipt.jsx";
 
 const Checkout = ({ cart, setCart, totalAmount }) => {
   const [receipt, setReceipt] = useState(null);
-  const [receiptData, setReceiptData] = useState(null);
+  const [saleData, setSaleData] = useState(null);
   const componentRef = useRef(null);
   const [triggerPrint, setTriggerPrint] = useState(false);
+  const ReactSwal = withReactContent(Swal);
 
-  const updateQuantity = (itemId, quantity) => {
-    setCart((prevCart) => {
-      if (quantity < 1) return prevCart.filter((cart) => cart._id !== itemId);
-      else
-        return prevCart.map((cart) =>
-          cart._id === itemId ? { ...cart, quantity } : cart
-        );
-    });
-  };
+  const updateQuantity = useCallback(
+    (itemId, quantity) => {
+      setCart((prevCart) => {
+        if (quantity < 1) return prevCart.filter((cart) => cart._id !== itemId);
+        else
+          return prevCart.map((cart) =>
+            cart._id === itemId ? { ...cart, quantity } : cart
+          );
+      });
+    },
+    [setCart]
+  );
 
   const deleteCartItem = (itemId) => {
     setCart((prevCart) =>
@@ -51,25 +55,24 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
   const saveTransaction = async () => {
     try {
       const { data } = await customFetch.post("/sales", { items: cart });
-      setReceiptData(data.sale);
-      withReactContent(Swal)
-        .fire({
-          title: "Payment Success!!",
-          icon: "success",
-          confirmButtonColor: "#16A34A",
-          confirmButtonText: "Print Receipt",
-          showCancelButton: true,
-          cancelButtonText: "OK",
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            setTriggerPrint(true); // Set triggerPrint to true
-          }
+      setSaleData(data.sale);
 
-          // clear cart data after successful payment
-          setCart([]);
-          removeCartData();
-        });
+      ReactSwal.fire({
+        title: "Payment Success!!",
+        icon: "success",
+        confirmButtonColor: "#16A34A",
+        confirmButtonText: "Print Receipt",
+        showCancelButton: true,
+        cancelButtonText: "OK",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setTriggerPrint(true); // Set triggerPrint to true
+        }
+
+        // clear cart data after successful payment
+        setCart([]);
+        removeCartData();
+      });
 
       // invalidate all sales and total
       queryClient.invalidateQueries({ queryKey: ["allSales"] });
@@ -84,28 +87,27 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
     }
   };
 
-  useEffect(() => {
-    console.log(receiptData);
-    if (triggerPrint && receiptData) {
-      console.log("handle print");
-      handlePrint();
-      setTriggerPrint(false); // Reset the trigger
-    }
-  }, [triggerPrint, receiptData]);
-
-  const handleOnBeforeGetContent = async () => {
-    console.log("handleOnBeforeGetContent");
-    console.log(receiptData);
-    const response = await customFetch.get(`/sales/${receiptData._id}`);
-    console.log(response.data);
-    setReceipt(response.data);
-    return response.data;
-  };
-
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    onBeforeGetContent: () => handleOnBeforeGetContent(),
   });
+
+  useEffect(() => {
+    const fetchAndPrint = async () => {
+      if (triggerPrint && saleData) {
+        const response = await customFetch.get(`/sales/${saleData._id}`);
+        setReceipt(response.data);
+      }
+    };
+
+    fetchAndPrint();
+  }, [triggerPrint, saleData]);
+
+  useEffect(() => {
+    if (receipt) {
+      handlePrint();
+      setTriggerPrint(false);
+    }
+  }, [receipt, handlePrint]);
 
   const payment = () => {
     withReactContent(Swal)

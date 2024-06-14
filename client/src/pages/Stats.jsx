@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currencyFormatter } from "@/utils/currencyFormatter.js";
 import customFetch from "@/utils/customFetch.js";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart } from "../components";
+import { BarChart, LineChart } from "../components";
 import { dateFormatter } from "../utils/dateFormatter";
 
 const allSalesQuery = {
@@ -23,9 +23,18 @@ const totalSalesDataQuery = {
   },
 };
 
+const productsSoldQuery = {
+  queryKey: ["productsSold"],
+  queryFn: async () => {
+    const response = await customFetch.get("/sales/products-sold");
+    return response.data;
+  },
+};
+
 export const loader = async () => {
   queryClient.ensureQueryData(totalSalesDataQuery);
   queryClient.ensureQueryData(allSalesQuery);
+  queryClient.ensureQueryData(productsSoldQuery);
   return null;
 };
 
@@ -40,8 +49,13 @@ const Stats = () => {
     isLoading: isLoadingTotalSales,
     isError: isErrorTotalSales,
   } = useQuery(totalSalesDataQuery);
+  const {
+    data: productsSoldData,
+    isLoading: isLoadingProductsSold,
+    isError: isErrorProductsSold,
+  } = useQuery(productsSoldQuery);
 
-  if (isLoadingSales || isLoadingTotalSales) {
+  if (isLoadingSales || isLoadingTotalSales || isLoadingProductsSold) {
     return (
       <div className="flex items-center justify-center">
         <Loading />
@@ -49,7 +63,7 @@ const Stats = () => {
     );
   }
 
-  if (isErrorSales || isErrorTotalSales) {
+  if (isErrorSales || isErrorTotalSales || isErrorProductsSold) {
     return (
       <div>
         <h1 className="font-bold">Ops! Something went wrong.</h1>
@@ -59,8 +73,9 @@ const Stats = () => {
 
   const { sales } = salesData;
   const { totalSales } = totalSalesData;
+  const { productsSold } = productsSoldData;
 
-  const state = {
+  const totalSalesState = {
     options: {
       chart: {
         id: "total-sales",
@@ -81,6 +96,32 @@ const Stats = () => {
       {
         name: "Total sold",
         data: totalSales.map((item) => item.totalSold),
+      },
+    ],
+  };
+
+  const productsSoldState = {
+    options: {
+      chart: {
+        id: "products-sold",
+      },
+      xaxis: {
+        categories: productsSold.map((entry) => entry._id),
+        title: {
+          text: "Date",
+        },
+      },
+      yaxis: {
+        title: {
+          text: "Number of Product Sold",
+        },
+      },
+    },
+
+    series: [
+      {
+        name: "Products Sold",
+        data: productsSold.map((entry) => entry.totalProductsSold),
       },
     ],
   };
@@ -108,7 +149,8 @@ const Stats = () => {
       <Card className="flex-1">
         <CardHeader></CardHeader>
         <CardContent>
-          <BarChart title="Products Chart" state={state} />
+          <BarChart title="Products Sold / Product" state={totalSalesState} />
+          <LineChart title="Products Sold / Day" state={productsSoldState} />
         </CardContent>
       </Card>
       <Card className="flex-1">

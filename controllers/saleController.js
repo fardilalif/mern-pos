@@ -81,8 +81,6 @@ export const getSingleSale = async (req, res) => {
     })
   );
 
-  console.log(populatedItems);
-
   res
     .status(StatusCodes.OK)
     .json({ ...sale.toObject(), items: populatedItems });
@@ -133,4 +131,35 @@ export const getTotalSaleData = async (req, res) => {
   res.status(StatusCodes.OK).json({
     totalSales: result,
   });
+};
+
+export const getProductsSoldPerDay = async (req, res) => {
+  const result = await Sale.aggregate([
+    // Unwind the items array to deconstruct it into individual items
+    { $unwind: "$items" },
+
+    // Add a new field `day` to format the date to only contain the day part
+    {
+      $addFields: {
+        day: {
+          $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+        },
+      },
+    },
+
+    // Group by day and sum the quantities
+    {
+      $group: {
+        _id: "$day",
+        totalProductsSold: { $sum: "$items.quantity" },
+      },
+    },
+
+    // Sort by day in ascending order
+    {
+      $sort: { _id: 1 },
+    },
+  ]);
+
+  res.status(StatusCodes.OK).json({ productsSold: result });
 };
