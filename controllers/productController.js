@@ -11,7 +11,8 @@ export const getAllProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   let product = { ...req.body };
-  console.log(product);
+
+  // check for image file
   if (req.file) {
     const file = formatImage(req.file);
 
@@ -32,6 +33,8 @@ export const getSingleProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
   let newProduct = { ...req.body };
+
+  // check for image file
 
   if (req.file) {
     const file = formatImage(req.file);
@@ -54,6 +57,10 @@ export const updateProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
   const removedProduct = await Product.findByIdAndDelete(req.params.id);
+
+  // remove image in cloudinary
+  if (removedProduct.imagePublicId)
+    cloudinary.uploader.destroy(removedProduct.imagePublicId);
 
   res.status(StatusCodes.OK).json({ msg: "product deleted" });
 };

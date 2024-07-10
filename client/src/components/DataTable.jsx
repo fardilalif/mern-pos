@@ -25,6 +25,7 @@ import {
 } from "./ui/dialog.jsx";
 import { Sheet } from "./ui/sheet.jsx";
 
+// TODO: implement sorting
 const DataTable = ({ columns, data, title }) => {
   const table = useReactTable({
     data,
@@ -129,12 +130,12 @@ const DataTable = ({ columns, data, title }) => {
                           return (
                             <TableRow key={item._id}>
                               <TableCell className="font-medium">
-                                {item.product.name}
+                                {item?.product?.name}
                               </TableCell>
-                              <TableCell>{item.quantity}</TableCell>
-                              <TableCell>{item.price}</TableCell>
+                              <TableCell>{item?.quantity}</TableCell>
+                              <TableCell>{item?.price}</TableCell>
                               <TableCell>
-                                {item.price * item.quantity}
+                                {item?.price * item?.quantity}
                               </TableCell>
                             </TableRow>
                           );

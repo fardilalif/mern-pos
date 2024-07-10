@@ -7,7 +7,7 @@ const Product = ({ product, cart, handleProductIncrement }) => {
       className="w-full h-full shadow-md hover:shadow-lg"
       onClick={() => handleProductIncrement(product)}
     >
-      <CardContent className="p-0 relative">
+      <CardContent className=" p-0 relative">
         {cart.map((item) => {
           if (item._id === product._id) {
             return (

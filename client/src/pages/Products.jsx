@@ -1,7 +1,29 @@
 import { queryClient } from "@/App.jsx";
+import { editProduct } from "@/components/EditProductForm.jsx";
 import { Button } from "@/components/ui/button.jsx";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { useQuery } from "@tanstack/react-query";
+import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Form } from "react-router-dom";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+import { AddProduct, EditProductForm } from "../components";
+import { addProduct } from "../components/AddProduct.jsx";
 import { Checkout, Loading, Product } from "./../components";
 import customFetch from "./../utils/customFetch";
 import {
@@ -9,8 +31,6 @@ import {
   removeCartData,
   saveCartData,
 } from "./../utils/localStorage";
-import { addProduct } from "./AddProduct.jsx";
-import { AddProduct } from "./index.js";
 
 const productsQuery = {
   queryKey: ["products"],
@@ -28,9 +48,43 @@ export const action = async ({ request }) => {
   const formData = await request.formData();
   const intent = formData.get("intent");
 
+  console.log(intent);
+
   if (intent === "add product") return await addProduct(formData);
+  else if (intent === "edit product") return await editProduct(formData);
+  else if (request.method === "DELETE") return await deleteProduct(formData);
   // TODO: edit/delete product
 
+  return null;
+};
+
+const deleteProduct = async (formData) => {
+  await withReactContent(Swal)
+    .fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    })
+    .then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const data = Object.fromEntries(formData);
+          const productId = data.productId;
+
+          await customFetch.delete(`/products/${productId}`);
+          queryClient.invalidateQueries(["products"]);
+
+          return null;
+        } catch (error) {
+          toast.error(error?.response?.data?.msg);
+          return error;
+        }
+      }
+    });
   return null;
 };
 
@@ -86,9 +140,9 @@ const Products = () => {
     );
 
   return (
-    <section className="grid sm:grid-cols-[1fr_8rem] gap-4">
+    <section className="flex gap-4">
       {/* render products */}
-      <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 place-items-center">
+      <div className="grid gap-4 grid-cols-3 sm:grid-cols-5 md:grid-cols-7">
         {products.length < 1 ? (
           <div className="text-center">
             <h1 className="text-lg font-medium tracking-wider">
@@ -98,19 +152,61 @@ const Products = () => {
         ) : (
           products.map((product) => {
             return (
-              <Product
-                key={product._id}
-                product={product}
-                cart={cart}
-                handleProductIncrement={handleProductIncrement}
-              />
+              <Dialog key={product._id}>
+                <ContextMenu>
+                  <ContextMenuTrigger>
+                    <Product
+                      product={product}
+                      cart={cart}
+                      handleProductIncrement={handleProductIncrement}
+                    />
+                  </ContextMenuTrigger>
+                  <ContextMenuContent className="w-40">
+                    <DialogTrigger asChild>
+                      <ContextMenuItem className="flex items-center justify-between">
+                        Edit Product <Pencil size={15} />
+                      </ContextMenuItem>
+                    </DialogTrigger>
+                    <ContextMenuItem>
+                      <Form method="delete" className="min-w-full">
+                        <input
+                          type="hidden"
+                          name="productId"
+                          value={product._id}
+                        ></input>
+                        <button
+                          type="submit"
+                          className="text-destructive w-full flex items-center justify-between"
+                        >
+                          Delete Product
+                          <Trash2 size={15} />
+                        </button>
+                      </Form>
+                    </ContextMenuItem>
+                  </ContextMenuContent>
+                </ContextMenu>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Edit Product Details</DialogTitle>
+                    <DialogDescription>
+                      Enter new product description to add product.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="py-2">
+                    <EditProductForm
+                      productId={product._id}
+                      product={product}
+                    />
+                  </div>
+                </DialogContent>
+              </Dialog>
             );
           })
         )}
       </div>
 
       {/* option buttons */}
-      <div className="order-first sm:order-none">
+      <div>
         <div className="flex flex-wrap w-full gap-4 md:flex-col md:w-32 ">
           <AddProduct />
 

@@ -2,9 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 // pages
 import {
-  AddProduct,
   DashboardLayout,
-  EditProduct,
   Error,
   HomeLayout,
   Landing,
@@ -65,14 +63,6 @@ const router = createBrowserRouter([
           {
             path: "transaction",
             element: <Transaction />,
-          },
-          {
-            path: "add-product",
-            element: <AddProduct />,
-          },
-          {
-            path: "edit-product",
-            element: <EditProduct />,
           },
           {
             path: "stats",

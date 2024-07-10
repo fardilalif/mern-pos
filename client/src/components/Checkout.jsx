@@ -74,9 +74,10 @@ const Checkout = ({ cart, setCart, totalAmount }) => {
         removeCartData();
       });
 
-      // invalidate all sales and total
+      // invalidate queries
       queryClient.invalidateQueries({ queryKey: ["allSales"] });
       queryClient.invalidateQueries({ queryKey: ["totalSales"] });
+      queryClient.invalidateQueries({ queryKey: ["productsSold"] });
     } catch (error) {
       console.log(error);
       withReactContent(Swal).fire({
