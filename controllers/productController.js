@@ -2,7 +2,6 @@ import { v2 as cloudinary } from "cloudinary";
 import { StatusCodes } from "http-status-codes";
 import { formatImage } from "../middlewares/multerMiddleware.js";
 import Product from "../models/ProductModel.js";
-import User from "../models/UserModel.js";
 
 export const getAllProducts = async (req, res) => {
   const products = await Product.find({});
@@ -35,7 +34,6 @@ export const updateProduct = async (req, res) => {
   let newProduct = { ...req.body };
 
   // check for image file
-
   if (req.file) {
     const file = formatImage(req.file);
 

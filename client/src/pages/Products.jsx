@@ -46,45 +46,40 @@ export const loader = async () => {
 
 export const action = async ({ request }) => {
   const formData = await request.formData();
-  const intent = formData.get("intent");
 
-  console.log(intent);
-
-  if (intent === "add product") return await addProduct(formData);
-  else if (intent === "edit product") return await editProduct(formData);
+  if (request.method === "POST") return await addProduct(formData);
+  else if (request.method === "PATCH") return await editProduct(formData);
   else if (request.method === "DELETE") return await deleteProduct(formData);
-  // TODO: edit/delete product
 
   return null;
 };
 
 const deleteProduct = async (formData) => {
-  await withReactContent(Swal)
-    .fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    })
-    .then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          const data = Object.fromEntries(formData);
-          const productId = data.productId;
+  const result = await withReactContent(Swal).fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+  });
 
-          await customFetch.delete(`/products/${productId}`);
-          queryClient.invalidateQueries(["products"]);
+  if (result.isConfirmed) {
+    try {
+      const data = Object.fromEntries(formData);
+      const productId = data.productId;
 
-          return null;
-        } catch (error) {
-          toast.error(error?.response?.data?.msg);
-          return error;
-        }
-      }
-    });
+      await customFetch.delete(`/products/${productId}`);
+      queryClient.invalidateQueries(["products"]);
+
+      return null;
+    } catch (error) {
+      toast.error(error?.response?.data?.msg);
+      return error;
+    }
+  }
+
   return null;
 };
 

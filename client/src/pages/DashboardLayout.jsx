@@ -32,7 +32,13 @@ const DashboardLayout = () => {
           <main>
             <Navbar />
             <div className="w-11/12 max-w-screen-xl mx-auto py-6">
-              {isLoading ? <Loading /> : <Outlet />}
+              {isLoading ? (
+                <div className="flex items-center justify-center">
+                  <Loading />
+                </div>
+              ) : (
+                <Outlet />
+              )}
             </div>
           </main>
         </section>

@@ -87,12 +87,7 @@ const AddProduct = () => {
                     accept="image/png, image/jpeg"
                   />
                 </div>
-                <Button
-                  type="submit"
-                  name="intent"
-                  value="add product"
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please

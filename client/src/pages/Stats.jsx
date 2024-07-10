@@ -1,9 +1,11 @@
 import { queryClient } from "@/App.jsx";
 import { DataTable, Loading } from "@/components/index.js";
+import { Button } from "@/components/ui/button.jsx";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { currencyFormatter } from "@/utils/currencyFormatter.js";
 import customFetch from "@/utils/customFetch.js";
 import { useQuery } from "@tanstack/react-query";
+import { ArrowUpDown } from "lucide-react";
 import { BarChart, LineChart } from "../components";
 import { dateFormatter } from "../utils/dateFormatter";
 
@@ -129,8 +131,21 @@ const Stats = () => {
   const columns = [
     {
       accessorKey: "totalAmount",
-      header: "Total Amount (MYR)",
-      accessorFn: (row) => currencyFormatter(row.totalAmount),
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Total Amount (MYR)
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
+      cell: ({ row }) => {
+        return currencyFormatter(row.getValue("totalAmount"));
+      },
+      // accessorFn: (row) => currencyFormatter(row.totalAmount),
     },
     {
       accessorKey: "createdBy",
@@ -139,7 +154,17 @@ const Stats = () => {
     },
     {
       accessorKey: "createdAt",
-      header: "Created At",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Created At
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        );
+      },
       cell: ({ row }) => dateFormatter(row.getValue("createdAt")),
     },
   ];

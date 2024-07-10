@@ -8,6 +8,8 @@ const saleSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
         },
+        name: String,
+        description: String,
         quantity: Number,
         price: Number,
       },

@@ -26,7 +26,7 @@ const EditProductForm = ({ productId, product }) => {
 
   return (
     <Form
-      method="POST"
+      method="PATCH"
       encType="multipart/form-data"
       className="grid w-full gap-4 items-center"
     >
@@ -78,12 +78,7 @@ const EditProductForm = ({ productId, product }) => {
           accept="image/png, image/jpeg"
         />
       </div>
-      <Button
-        type="submit"
-        name="intent"
-        value="edit product"
-        disabled={isSubmitting}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Please wait

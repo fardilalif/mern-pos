@@ -10,6 +10,7 @@ import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useState } from "react";
@@ -27,29 +28,34 @@ import { Sheet } from "./ui/sheet.jsx";
 
 // TODO: implement sorting
 const DataTable = ({ columns, data, title }) => {
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [isOpenSheet, setIsOpenSheet] = useState(false);
+  const [sorting, setSorting] = useState([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
   });
-
-  const [selectedRow, setIsSelectedRow] = useState(null);
-  const [isOpenSheet, setIsOpenSheet] = useState(false);
 
   const handleTriggerContentSheet = () => {
     setIsOpenSheet(!isOpenSheet);
   };
 
   const handleRowClick = (rowData) => {
-    setIsSelectedRow(rowData);
+    setSelectedRow(rowData);
     handleTriggerContentSheet();
   };
 
   return (
     <div>
       <div className="mb-4">
-        <h1 className="font-semibold tra cking-wide">{title}</h1>
+        <h1 className="font-semibold tracking-wide">{title}</h1>
       </div>
       <div>
         <div className="rounded-md border">
@@ -130,12 +136,16 @@ const DataTable = ({ columns, data, title }) => {
                           return (
                             <TableRow key={item._id}>
                               <TableCell className="font-medium">
-                                {item?.product?.name}
+                                {item?.name}
                               </TableCell>
                               <TableCell>{item?.quantity}</TableCell>
-                              <TableCell>{item?.price}</TableCell>
                               <TableCell>
-                                {item?.price * item?.quantity}
+                                {currencyFormatter(item?.price)}
+                              </TableCell>
+                              <TableCell>
+                                {currencyFormatter(
+                                  item?.price * item?.quantity
+                                )}
                               </TableCell>
                             </TableRow>
                           );
