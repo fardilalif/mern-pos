@@ -5,6 +5,7 @@ import {
   useLoaderData,
   useNavigation,
 } from "react-router-dom";
+import { toast } from "react-toastify";
 import { Loading, Navbar } from "../components/index.js";
 import customFetch from "./../utils/customFetch";
 
@@ -13,6 +14,7 @@ export const loader = async () => {
     const { data } = await customFetch.get("/users/current-user");
     return data;
   } catch (error) {
+    toast.error("Please login again");
     console.log(error);
     return redirect("/");
   }

@@ -170,15 +170,17 @@ const Stats = () => {
   ];
 
   return (
-    <div className="flex  gap-4">
-      <Card className="flex-1">
+    <div className="flex flex-col gap-4">
+      <Card>
         <CardHeader></CardHeader>
         <CardContent>
-          <BarChart title="Products Sold / Product" state={totalSalesState} />
-          <LineChart title="Products Sold / Day" state={productsSoldState} />
+          <div className="grid grid-cols-2 gap-2">
+            <BarChart title="Products Sold / Product" state={totalSalesState} />
+            <LineChart title="Products Sold / Day" state={productsSoldState} />
+          </div>
         </CardContent>
       </Card>
-      <Card className="flex-1">
+      <Card>
         <CardHeader></CardHeader>
         <CardContent>
           <DataTable data={sales} columns={columns} title="Transactions" />

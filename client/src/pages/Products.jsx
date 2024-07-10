@@ -137,11 +137,11 @@ const Products = () => {
   return (
     <section className="flex gap-4">
       {/* render products */}
-      <div className="grid gap-4 grid-cols-3 sm:grid-cols-5 md:grid-cols-7">
+      <div className=" grow grid gap-4 grid-cols-[repeat(auto-fit,_minmax(100px,_1fr))]">
         {products.length < 1 ? (
           <div className="text-center">
-            <h1 className="text-lg font-medium tracking-wider">
-              Ops! Products are empty
+            <h1 className="text-lg font-semibold tracking-wider">
+              Ops! Products are empty...
             </h1>
           </div>
         ) : (

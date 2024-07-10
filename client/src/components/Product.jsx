@@ -4,10 +4,10 @@ import { currencyFormatter } from "@/utils/currencyFormatter.js";
 const Product = ({ product, cart, handleProductIncrement }) => {
   return (
     <Card
-      className="w-full h-full shadow-md hover:shadow-lg"
+      className="h-full shadow-md hover:shadow-lg"
       onClick={() => handleProductIncrement(product)}
     >
-      <CardContent className=" p-0 relative">
+      <CardContent className="p-0 relative h-full ">
         {cart.map((item) => {
           if (item._id === product._id) {
             return (
@@ -30,11 +30,11 @@ const Product = ({ product, cart, handleProductIncrement }) => {
           alt="product image"
         />
 
-        <div className="flex flex-col justify-between items-baseline overflow-auto py-2 px-4 ">
+        <div className=" flex flex-col justify-between  overflow-auto py-2 px-4 ">
           <h2 className="text-lg font-semibold capitalize tracking-wide">
             {product.name}
           </h2>
-          <h3 className="text-xs">{currencyFormatter(product.price)}</h3>
+          <h3 className=" text-xs">{currencyFormatter(product.price)}</h3>
         </div>
       </CardContent>
     </Card>

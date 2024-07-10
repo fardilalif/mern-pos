@@ -26,7 +26,6 @@ import {
 } from "./ui/dialog.jsx";
 import { Sheet } from "./ui/sheet.jsx";
 
-// TODO: implement sorting
 const DataTable = ({ columns, data, title }) => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [isOpenSheet, setIsOpenSheet] = useState(false);

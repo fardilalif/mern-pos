@@ -4,14 +4,18 @@ import Sale from "../models/SaleModel.js";
 import { NotFoundError } from "./../errors/customErrors.js";
 
 export const getAllSales = async (req, res) => {
-  try {
-    const sales = await Sale.find({}).populate("createdBy");
+  const page = req.query.page || 1;
+  const perPage = req.query.perPage || 10;
+  const skip = (page - 1) * perPage;
 
-    res.status(StatusCodes.OK).json({ sales });
-  } catch (error) {
-    console.error("Error fetching sales:", error);
-    throw new Error("Error fetching sales");
-  }
+
+  const sales = await Sale.find()
+    .skip(skip)
+    .limit(perPage)
+    .populate("createdBy")
+    .exec();
+
+  res.status(StatusCodes.OK).json({ sales });
 };
 
 export const createSale = async (req, res) => {

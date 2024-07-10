@@ -24,7 +24,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="h-[4rem] flex justify-center items-center shadow-lg bg-primary sticky top-0 z-10">
+    <nav className="h-[4rem] flex justify-center items-center shadow-lg bg-primary sticky top-0 z-50">
       <div className="w-[90%] max-w-screen-xl flex justify-between items-center">
         {/* home button */}
         <Link
