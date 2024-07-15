@@ -4,8 +4,27 @@ import { formatImage } from "../middlewares/multerMiddleware.js";
 import Product from "../models/ProductModel.js";
 
 export const getAllProducts = async (req, res) => {
-  const products = await Product.find({});
-  res.status(StatusCodes.OK).json({ products });
+  const page = req.query.page;
+  const perPage = req.query.perPage;
+  const skip = (page - 1) * perPage;
+  const query = req.query.query;
+
+  let queryObject = {};
+
+  if (query) {
+    queryObject.$or = [
+      { name: { $regex: query, $options: "i" } },
+      { description: { $regex: query, $options: "i" } },
+      { category: { $regex: query, $options: "i" } },
+    ];
+  }
+
+  const products = await Product.find(queryObject).skip(skip).limit(perPage);
+  const totalProducts = await Product.countDocuments(queryObject);
+  const totalPages = Math.ceil(totalProducts / perPage);
+  res
+    .status(StatusCodes.OK)
+    .json({ totalProducts, totalPages, page, products });
 };
 
 export const createProduct = async (req, res) => {

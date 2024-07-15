@@ -2,19 +2,42 @@ import { queryClient } from "@/App.jsx";
 import { DataTable, Loading } from "@/components/index.js";
 import { Button } from "@/components/ui/button.jsx";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog.jsx";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table.jsx";
 import { currencyFormatter } from "@/utils/currencyFormatter.js";
 import customFetch from "@/utils/customFetch.js";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpDown } from "lucide-react";
+import { useLoaderData } from "react-router-dom";
 import { BarChart, LineChart } from "../components";
 import { dateFormatter } from "../utils/dateFormatter";
 
-const allSalesQuery = {
-  queryKey: ["allSales"],
-  queryFn: async () => {
-    const response = await customFetch.get("/sales");
-    return response.data;
-  },
+const allSalesQuery = (params) => {
+  const { page = 1, perPage = 5, query = "" } = params;
+
+  return {
+    queryKey: ["allSales", page, perPage, query],
+    queryFn: async () => {
+      const response = await customFetch.get("/sales", {
+        params: { page, perPage, query },
+      });
+      return response.data;
+    },
+  };
 };
 
 const totalSalesDataQuery = {
@@ -33,19 +56,25 @@ const productsSoldQuery = {
   },
 };
 
-export const loader = async () => {
+export const loader = async ({ request }) => {
+  const params = Object.fromEntries([
+    ...new URL(request.url).searchParams.entries(),
+  ]);
   queryClient.ensureQueryData(totalSalesDataQuery);
-  queryClient.ensureQueryData(allSalesQuery);
+  queryClient.ensureQueryData(allSalesQuery(params));
   queryClient.ensureQueryData(productsSoldQuery);
-  return null;
+  return { params };
 };
 
 const Stats = () => {
+  const { params } = useLoaderData();
+  const { page, perPage, query } = params;
+
   const {
     data: salesData,
     isLoading: isLoadingSales,
     isError: isErrorSales,
-  } = useQuery(allSalesQuery) || {};
+  } = useQuery(allSalesQuery(params));
   const {
     data: totalSalesData,
     isLoading: isLoadingTotalSales,
@@ -56,6 +85,59 @@ const Stats = () => {
     isLoading: isLoadingProductsSold,
     isError: isErrorProductsSold,
   } = useQuery(productsSoldQuery);
+
+  const renderDialogContent = (selectedRow) => {
+    return (
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Transaction Detail</DialogTitle>
+          <DialogDescription>View transaction details.</DialogDescription>
+        </DialogHeader>
+
+        <div className="grid gap-y-4">
+          <h5 className="font-semibold tracking-wide">Items: </h5>
+
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Item</TableHead>
+                <TableHead>Quantity</TableHead>
+                <TableHead>Price (MYR)</TableHead>
+                <TableHead>Amount (MYR)</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {selectedRow?.items?.map((item) => {
+                return (
+                  <TableRow key={item._id}>
+                    <TableCell className="font-medium">{item?.name}</TableCell>
+                    <TableCell>{item?.quantity}</TableCell>
+                    <TableCell>{currencyFormatter(item?.price)}</TableCell>
+                    <TableCell>
+                      {currencyFormatter(item?.price * item?.quantity)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+
+          <div className="flex items-center justify-end">
+            <span className="font-semibold">
+              Total: {currencyFormatter(selectedRow?.totalAmount)}
+            </span>
+          </div>
+        </div>
+        <DialogFooter className="sm:justify-start">
+          <DialogClose asChild>
+            <Button type="button" variant="secondary">
+              Close
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    );
+  };
 
   if (isLoadingSales || isLoadingTotalSales || isLoadingProductsSold) {
     return (
@@ -72,7 +154,6 @@ const Stats = () => {
       </div>
     );
   }
-
   const { sales } = salesData;
   const { totalSales } = totalSalesData;
   const { productsSold } = productsSoldData;
@@ -145,12 +226,10 @@ const Stats = () => {
       cell: ({ row }) => {
         return currencyFormatter(row.getValue("totalAmount"));
       },
-      // accessorFn: (row) => currencyFormatter(row.totalAmount),
     },
     {
-      accessorKey: "createdBy",
+      accessorKey: "createdBy.name",
       header: "Created By",
-      accessorFn: (row) => row.createdBy.name,
     },
     {
       accessorKey: "createdAt",
@@ -183,7 +262,17 @@ const Stats = () => {
       <Card>
         <CardHeader></CardHeader>
         <CardContent>
-          <DataTable data={sales} columns={columns} title="Transactions" />
+          <DataTable
+            data={sales}
+            columns={columns}
+            title="Transactions"
+            dialogContent={renderDialogContent}
+            totalRows={salesData.totalSales}
+            rowsPerPage={Number(perPage) || 5}
+            pageCount={salesData.totalPages}
+            query={query}
+            currentPage={Number(page) || 1}
+          />
         </CardContent>
       </Card>
     </div>

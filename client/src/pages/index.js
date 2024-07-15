@@ -4,6 +4,7 @@ export { default as HomeLayout } from "./HomeLayout.jsx";
 export { default as Landing } from "./Landing.jsx";
 export { default as Login } from "./Login.jsx";
 export { default as Products } from "./Products.jsx";
+export { default as ProductsDetail } from "./ProductsDetail.jsx";
 export { default as Register } from "./Register.jsx";
 export { default as Stats } from "./Stats.jsx";
 export { default as Transaction } from "./Transaction.jsx";

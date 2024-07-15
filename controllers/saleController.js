@@ -5,17 +5,24 @@ import { NotFoundError } from "./../errors/customErrors.js";
 
 export const getAllSales = async (req, res) => {
   const page = req.query.page || 1;
-  const perPage = req.query.perPage || 10;
+  const perPage = req.query.perPage || 5;
   const skip = (page - 1) * perPage;
+  const query = req.query.query;
 
+  let queryObject = {};
+  // if (query) {
+  //   queryObject.$or = [{ createdBy: { $regex: query, $options: "i" } }];
+  // }
 
-  const sales = await Sale.find()
+  const sales = await Sale.find(queryObject)
     .skip(skip)
     .limit(perPage)
     .populate("createdBy")
     .exec();
+  const totalSales = await Sale.countDocuments(queryObject);
+  const totalPages = Math.ceil(totalSales / perPage);
 
-  res.status(StatusCodes.OK).json({ sales });
+  res.status(StatusCodes.OK).json({ totalSales, totalPages, page, sales });
 };
 
 export const createSale = async (req, res) => {

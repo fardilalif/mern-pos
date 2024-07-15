@@ -8,6 +8,7 @@ import {
   Landing,
   Login,
   Products,
+  ProductsDetail,
   Register,
   Stats,
   Transaction,
@@ -23,6 +24,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { loader as dashboardLoader } from "./pages/DashboardLayout.jsx";
 import { loader as productsLoader } from "./pages/Products.jsx";
+import { loader as allProductsLoader } from "./pages/ProductsDetail.jsx";
 import { loader as allSalesLoader } from "./pages/Stats.jsx";
 
 export const queryClient = new QueryClient({
@@ -59,6 +61,11 @@ const router = createBrowserRouter([
             element: <Products />,
             loader: productsLoader,
             action: productsAction,
+          },
+          {
+            path: "products-detail",
+            element: <ProductsDetail />,
+            loader: allProductsLoader,
           },
           {
             path: "transaction",
